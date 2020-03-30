@@ -16,6 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name='android-essentials'
-include ':navigation'
-include ':navigation_example'
+package org.potados.navigation_example
+
+import org.potados.navigation_example.R
+
+
+val rootDestinations = intArrayOf(R.id.home_dest, R.id.library_dest, R.id.settings_dest)

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2020 Song Byeong Jun <potados99@gmail.com>
+  ~
+  ~ This file is part of android-essentials (https://github.com/potados99/android-essentials).
+  ~ Android-essentials is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Android-essentials is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_settings"
+    app:startDestination="@id/settings_dest">
+
+    <fragment
+        android:id="@+id/settings_dest"
+        android:name="org.potados.navigation_example.modules.settings.SettingsFragment"
+        android:label="Settings">
+        <action
+            android:id="@+id/action_profile_settings"
+            app:destination="@id/profile_settings_dest" />
+        <action
+            android:id="@+id/action_privacy_settings"
+            app:destination="@id/privacy_settings_dest" />
+    </fragment>
+    <fragment
+        android:id="@+id/privacy_settings_dest"
+        android:name="org.potados.navigation_example.modules.settings.PrivacySettingsFragment"
+        android:label="Privacy Settings" />
+    <fragment
+        android:id="@+id/profile_settings_dest"
+        android:name="org.potados.navigation_example.modules.settings.ProfileSettingsFragment"
+        android:label="Profile Settings" />
+</navigation>

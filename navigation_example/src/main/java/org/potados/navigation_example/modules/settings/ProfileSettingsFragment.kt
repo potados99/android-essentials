@@ -16,6 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name='android-essentials'
-include ':navigation'
-include ':navigation_example'
+package org.potados.navigation_example.modules.settings
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import org.potados.navigation_example.R
+
+class ProfileSettingsFragment : Fragment() {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_profile_settings, container, false)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = ProfileSettingsFragment()
+    }
+}
