@@ -97,14 +97,18 @@ abstract class NavigationActivity : AppCompatActivity(),
 
     override fun onBackPressed() {
         val fragment = fragments[main_pager.currentItem]
-        val hadNestedFragments = fragment.onBackPressed()
-        // if no fragments were popped
-        if (!hadNestedFragments) {
-            if (backStack.size > 0) {
-                main_pager.currentItem = backStack.pop()
-            } else {
-                super.onBackPressed()
-            }
+        val hasNavigatedUpNestedFragment = fragment.onBackPressed()
+
+        if (!hasNavigatedUpNestedFragment) {
+            handleRootLevelBackPress()
+        }
+    }
+
+    private fun handleRootLevelBackPress() {
+        if (backStack.size > 0) {
+            main_pager.currentItem = backStack.pop()
+        } else {
+            super.onBackPressed()
         }
     }
 
