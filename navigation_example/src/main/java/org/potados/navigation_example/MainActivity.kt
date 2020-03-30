@@ -21,29 +21,29 @@ package org.potados.navigation_example
 import org.potados.navigation.base.NavigationActivity
 import org.potados.navigation.base.NavigationFragment
 
-class NewActivity : NavigationActivity() {
+class MainActivity : NavigationActivity() {
 
     override val fragments = listOf(
         NavigationFragment.newInstance(
-            R.layout.content_home_base,
-            R.id.toolbar_home,
-            R.id.nav_host_home,
-            rootDestinations),
-        NavigationFragment.newInstance(
-            R.layout.content_library_base,
-            R.id.toolbar_library,
-            R.id.nav_host_library,
-            rootDestinations),
-        NavigationFragment.newInstance(
-            R.layout.content_settings_base,
-            R.id.toolbar_settings,
-            R.id.nav_host_settings,
-            rootDestinations))
+            layoutRes = R.layout.content_home_base,
+            toolbarId = R.id.toolbar_home,
+            navHostId = R.id.nav_host_home,
+            tabItemId = R.id.home,
+            rootDests = rootDestinations),
 
-    override val indexToPage: Map<Int, Int> = mapOf(
-        0 to R.id.home,
-        1 to R.id.library,
-        2 to R.id.settings)
+        NavigationFragment.newInstance(
+            layoutRes = R.layout.content_library_base,
+            toolbarId = R.id.toolbar_library,
+            navHostId = R.id.nav_host_library,
+            tabItemId = R.id.library,
+            rootDests = rootDestinations),
+
+        NavigationFragment.newInstance(
+            layoutRes = R.layout.content_settings_base,
+            toolbarId = R.id.toolbar_settings,
+            navHostId = R.id.nav_host_settings,
+            tabItemId = R.id.settings,
+            rootDests = rootDestinations))
 
     override val menuRes: Int = R.menu.menu_main
 }

@@ -38,6 +38,7 @@ class NavigationFragment : Fragment() {
     private var layoutRes: Int = -1
     private var toolbarId: Int = -1
     private var navHostId: Int = -1
+    private var tabItemId: Int = -1
     private lateinit var appBarConfig: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +52,7 @@ class NavigationFragment : Fragment() {
             layoutRes = it.getInt(KEY_LAYOUT)
             toolbarId = it.getInt(KEY_TOOLBAR)
             navHostId = it.getInt(KEY_NAV_HOST)
+            tabItemId = it.getInt(KEY_TAB_ITEM)
             appBarConfig = it.getIntArray(KEY_ROOT_DEST)?.let { destinations ->
                 AppBarConfiguration(destinations.toSet())
             } ?: return
@@ -88,19 +90,29 @@ class NavigationFragment : Fragment() {
 
     fun handleDeepLink(intent: Intent) = requireActivity().findNavController(navHostId).handleDeepLink(intent)
 
+    fun getTabItemId(): Int {
+        return tabItemId
+    }
+
     companion object {
         private const val KEY_LAYOUT = "layout_key"
         private const val KEY_TOOLBAR = "toolbar_key"
         private const val KEY_NAV_HOST = "nav_host_key"
+        private const val KEY_TAB_ITEM = "tab_item_key"
         private const val KEY_ROOT_DEST = "root_dest_key"
 
-        fun newInstance(layoutRes: Int, toolbarId: Int, navHostId: Int, rootDestinations: IntArray) =
+        fun newInstance(layoutRes: Int,
+                        toolbarId: Int,
+                        navHostId: Int,
+                        tabItemId: Int,
+                        rootDests: IntArray) =
             NavigationFragment().apply {
                 arguments = Bundle().apply {
                     putInt(KEY_LAYOUT, layoutRes)
                     putInt(KEY_TOOLBAR, toolbarId)
                     putInt(KEY_NAV_HOST, navHostId)
-                    putIntArray(KEY_ROOT_DEST, rootDestinations)
+                    putInt(KEY_TAB_ITEM, tabItemId)
+                    putIntArray(KEY_ROOT_DEST, rootDests)
                 }
             }
     }

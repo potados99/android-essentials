@@ -52,11 +52,6 @@ abstract class NavigationActivity : AppCompatActivity(),
     abstract val fragments: List<NavigationFragment>
 
     /**
-     * Map of { tab position : tab id }.
-     */
-    abstract val indexToPage: Map<Int, Int>
-
-    /**
      * Bottom navigation menu resource id
      */
     abstract val menuRes: Int
@@ -125,13 +120,20 @@ abstract class NavigationActivity : AppCompatActivity(),
     /********************************
      * BottomNavigationView
      ********************************/
-    override fun onNavigationItemReselected(item: MenuItem) = getHostFragmentByTabItem(item).popToRoot()
+    override fun onNavigationItemReselected(item: MenuItem) =
+        getHostFragmentByTabItem(item).popToRoot()
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean = setItem(item)
+    override fun onNavigationItemSelected(item: MenuItem): Boolean =
+        setItem(item)
 
-    private fun getHostFragmentByTabItem(item: MenuItem): NavigationFragment = fragments[indexToPage.values.indexOf(item.itemId)]
+    private fun getHostFragmentByTabItem(item: MenuItem): NavigationFragment =
+        fragments.find { it.getTabItemId() == item.itemId }!!
 
-    private fun setItem(item: MenuItem): Boolean = setItem(indexToPage.values.indexOf(item.itemId))
+    private fun getFragmentPositionByTabItem(item: MenuItem) =
+        fragments.indexOf(getHostFragmentByTabItem(item))
+
+    private fun setItem(item: MenuItem): Boolean =
+        setItem(getFragmentPositionByTabItem(item))
 
     private fun setItem(position: Int): Boolean {
         with(main_pager) {
@@ -147,11 +149,11 @@ abstract class NavigationActivity : AppCompatActivity(),
     }
 
     private fun markTabSelected(position: Int) {
-        val itemId = indexToPage[position] ?: return
+        val tabItemId = fragments[position].getTabItemId()
 
         with(bottom_nav) {
-            if (selectedItemId != itemId) {
-                selectedItemId = itemId
+            if (selectedItemId != tabItemId) {
+                selectedItemId = tabItemId
             }
         }
     }
