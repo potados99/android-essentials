@@ -16,8 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name='android-essentials'
-include ':navigation'
-include ':navigation_example'
-include ':failable'
-include ':failable_example'
+package org.potados.failable.base
+
+data class Failure(val message: String, val visible: Boolean = false) {
+    override fun toString(): String {
+        return "$message: ${if (visible) "visible" else "invisible"}"
+    }
+}

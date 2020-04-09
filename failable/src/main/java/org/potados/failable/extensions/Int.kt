@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name='android-essentials'
-include ':navigation'
-include ':navigation_example'
-include ':failable'
-include ':failable_example'
+package org.potados.failable.extensions
+
+fun Int.has(other: Int): Boolean {
+    return this.or(other) != 0
+}

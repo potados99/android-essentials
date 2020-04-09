@@ -11,6 +11,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/failable" />
+            <option value="$PROJECT_DIR$/failable_example" />
             <option value="$PROJECT_DIR$/navigation" />
             <option value="$PROJECT_DIR$/navigation_example" />
           </set>

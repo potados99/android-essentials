@@ -16,8 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name='android-essentials'
-include ':navigation'
-include ':navigation_example'
-include ':failable'
-include ':failable_example'
+package org.potados.failable.extensions
+
+import android.content.Context
+import androidx.annotation.StringRes
+import org.potados.failable.Fail
+import org.potados.failable.base.Failure
+
+fun Context.debug(@StringRes message: Int, vararg formatArgs: Any?, visible: Boolean=true) {
+    val failure = Failure(getString(message, *formatArgs), visible)
+
+    Fail.debug(failure)
+}
+
+fun Context.fail(@StringRes message: Int, vararg formatArgs: Any?, visible: Boolean=true) {
+    val failure = Failure(getString(message, *formatArgs), visible)
+
+    Fail.usual(failure)
+}
+
+fun Context.wtf(@StringRes message: Int, vararg formatArgs: Any?, visible: Boolean=true) {
+    val failure = Failure(getString(message, *formatArgs), visible)
+
+    Fail.wtf(failure)
+}
