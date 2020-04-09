@@ -22,11 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import org.potados.failable.Fail
 import org.potados.failable.base.Failure
-import org.potados.failable.base.NetworkFailure
 import org.potados.failable.extensions.onFail
 
 class MainActivity : AppCompatActivity() {

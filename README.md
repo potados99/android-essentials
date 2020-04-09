@@ -29,3 +29,32 @@
 이때 최대 탭 갯수만큼 뒤로 버튼이 눌려야 액티비티가 종료된다.
 
 이는 Google Play Store 애플리케이션의 동작을 모방한 것이다.
+
+## Failable
+
+**Global event driven error reporting system**
+
+### 개요
+
+어디서든 아래와 같이 쓸 수 있다.
+
+~~~kotlin
+Fail.debug(Failure("Nothing."))
+Fail.usual(Failure("Something went wrong."))
+Fail.wtf(Failure("What a terrible failure!"))
+~~~
+
+해당 메소드를 실행하면 Fail 전역적으로 전달된다. 기본적으로 Toast 메시지로도 출력된다.
+
+아래 메소드를 이용해 observer를 등록한다.
+
+~~~kotlin
+Fail.observe(lifecycleOwner) { failure, channel ->
+    Log.d("Fail", "$failure on $channel")
+}
+
+// Inside LifecycleOwner
+onFail { failure, channel ->
+    Log.d("Fail", "$failure on $channel")
+}
+~~~

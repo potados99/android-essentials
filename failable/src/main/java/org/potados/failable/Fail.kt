@@ -52,20 +52,22 @@ class Fail {
             this.context = context
         }
 
-        fun debug(failure: Failure) {
-            emit(failure, DEBUG)
+        fun debug(failure: Failure, verbose: Boolean = true) {
+            emit(failure, DEBUG, verbose)
         }
 
-        fun usual(failure: Failure) {
-            emit(failure, USUAL)
+        fun usual(failure: Failure, verbose: Boolean = true) {
+            emit(failure, USUAL, verbose)
         }
 
-        fun wtf(failure: Failure) {
-            emit(failure, WTF)
+        fun wtf(failure: Failure, verbose: Boolean = true) {
+            emit(failure, WTF, verbose)
         }
 
-        private fun emit(failure: Failure, channel: Int) {
-            toast("${failure::class.java.name.split('.').last()}: ${failure.message}")
+        private fun emit(failure: Failure, channel: Int, verbose: Boolean) {
+            if (verbose) {
+                toast("${failure::class.java.name.split('.').last()}: ${failure.message}")
+            }
 
             emitEvent(failure, channel)
         }

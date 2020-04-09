@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.potados.failable.base
+package org.potados.failable_example
+
+import org.potados.failable.base.Failure
 
 class NetworkFailure(message: String) : Failure(message)
