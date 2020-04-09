@@ -18,7 +18,10 @@
 
 package org.potados.failable
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -30,61 +33,71 @@ class Fail {
     companion object {
         private const val TAG = "Fail"
 
-        private const val DEBUG = 0x00
-        private const val USUAL = 0x01 // default
-        private const val WTF = 0x02
+        private const val DEBUG = 0x01
+        private const val USUAL = 0x02 // default
+        private const val WTF = 0x04
 
         private const val level = DEBUG
+
+        private var context: Context? = null
 
         private val allChannels = mapOf<Int, MutableLiveData<Failure>>(
             Pair(DEBUG, MutableLiveData()),
             Pair(USUAL, MutableLiveData()),
             Pair(WTF, MutableLiveData()))
+
         private val availableChannels = allChannels.filter { it.key >= level }
 
+        fun initialize(context: Context) {
+            this.context = context
+        }
+
         fun debug(failure: Failure) {
-            emit(
-                failure,
-                DEBUG
-            )
+            emit(failure, DEBUG)
         }
 
         fun usual(failure: Failure) {
-            emit(
-                failure,
-                USUAL
-            )
+            emit(failure, USUAL)
         }
 
         fun wtf(failure: Failure) {
-            emit(
-                failure,
-                WTF
-            )
+            emit(failure, WTF)
         }
 
         private fun emit(failure: Failure, channel: Int) {
-            availableChannels[USUAL]?.let { channelFound ->
+            toast("${failure::class.java.name.split('.').last()}: ${failure.message}")
+
+            emitEvent(failure, channel)
+        }
+
+        private fun toast(message: String) {
+            context?.let {
+                Toast.makeText(it, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        private fun emitEvent(failure: Failure, channel: Int) {
+            availableChannels[channel]?.let { channelFound ->
                 Log.d(TAG, "Failure set in channel $channel: $failure")
                 channelFound.postValue(failure)
             }
         }
 
         fun observe(lifecycleOwner: LifecycleOwner,
-                   channel: Int = DEBUG.and(
-                       USUAL
-                   ).and(WTF),
+                   channel: Int = DEBUG.or(USUAL).or(WTF),
                    body: (Failure, Int) -> Any?) {
 
-            val channelsToObserve = availableChannels
-                .filter { channel.has(it.key) }
-
-            channelsToObserve.forEach { entry ->
+            getChannelsToObserve(channel).forEach { entry ->
                 Log.d(TAG, "$lifecycleOwner listening on ${entry.key} channel")
+
                 entry.value.observe(lifecycleOwner, Observer { failure ->
                     body(failure, entry.key)
                 })
             }
+        }
+
+        private fun getChannelsToObserve(channel: Int): Map<Int, MutableLiveData<Failure>> {
+            return availableChannels.filter { channel.has(it.key) }
         }
 
         fun removeObservers(lifecycleOwner: LifecycleOwner) {

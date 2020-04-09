@@ -18,8 +18,4 @@
 
 package org.potados.failable.base
 
-open class Failure(val message: String) {
-    override fun toString(): String {
-        return message
-    }
-}
+class NetworkFailure(message: String) : Failure(message)

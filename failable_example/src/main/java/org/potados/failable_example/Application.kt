@@ -16,10 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.potados.failable.base
+package org.potados.failable_example
 
-open class Failure(val message: String) {
-    override fun toString(): String {
-        return message
+import android.app.Application
+import org.potados.failable.Fail
+
+class Application : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        Fail.initialize(this)
     }
 }

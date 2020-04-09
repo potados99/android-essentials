@@ -20,11 +20,44 @@ package org.potados.failable_example
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
+import org.potados.failable.Fail
+import org.potados.failable.base.Failure
+import org.potados.failable.base.NetworkFailure
+import org.potados.failable.extensions.onFail
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        initializeView()
+
+        Handler().postDelayed({
+            Worker().doSome()
+        }, 1000)
+    }
+
+    private fun initializeView() {
+        debugButton.setOnClickListener {
+            Fail.debug(Failure("debug"))
+        }
+
+        usualButton.setOnClickListener {
+            Fail.usual(Failure("usual"))
+        }
+
+        wtfButton.setOnClickListener {
+            Fail.wtf(NetworkFailure("Ooh network down"))
+        }
+        
+        onFail { failure, channel ->
+            Log.d("MainActivity", "$failure on $channel")
+        }
+
     }
 }

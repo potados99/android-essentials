@@ -16,27 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.potados.failable.extensions
+package org.potados.failable_example
 
-import android.content.Context
-import androidx.annotation.StringRes
 import org.potados.failable.Fail
 import org.potados.failable.base.Failure
 
-fun Context.debug(@StringRes message: Int, vararg formatArgs: Any?, visible: Boolean=true) {
-    val failure = Failure(getString(message, *formatArgs), visible)
-
-    Fail.debug(failure)
-}
-
-fun Context.fail(@StringRes message: Int, vararg formatArgs: Any?, visible: Boolean=true) {
-    val failure = Failure(getString(message, *formatArgs), visible)
-
-    Fail.usual(failure)
-}
-
-fun Context.wtf(@StringRes message: Int, vararg formatArgs: Any?, visible: Boolean=true) {
-    val failure = Failure(getString(message, *formatArgs), visible)
-
-    Fail.wtf(failure)
+class Worker {
+    fun doSome() {
+        Fail.usual(Failure("Some failure!"))
+    }
 }
