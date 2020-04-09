@@ -58,3 +58,13 @@ onFail { failure, channel ->
     Log.d("Fail", "$failure on $channel")
 }
 ~~~
+
+### 사용법
+
+Fail의 Toast가 동작하기 위해서는 Context가 필요하다.
+
+앱의 시작 포인트에서 다음과 같이 호출해준다.
+
+~~~kotlin
+Fail.initialize(this/* Application */)
+~~~
