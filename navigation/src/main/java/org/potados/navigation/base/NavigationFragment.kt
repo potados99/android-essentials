@@ -88,7 +88,7 @@ class NavigationFragment : Fragment() {
         }
     }
 
-    fun handleDeepLink(intent: Intent) = requireActivity().findNavController(navHostId).handleDeepLink(intent)
+    fun handleDeepLink(intent: Intent) = activity?.findNavController(navHostId)?.handleDeepLink(intent) ?: false
 
     fun getTabItemId(): Int {
         return tabItemId
