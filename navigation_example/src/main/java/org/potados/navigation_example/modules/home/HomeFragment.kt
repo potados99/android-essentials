@@ -36,9 +36,12 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        /*
         val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar_home)
         toolbar.inflateMenu(R.menu.menu_home)
         toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected)
+
+         */
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

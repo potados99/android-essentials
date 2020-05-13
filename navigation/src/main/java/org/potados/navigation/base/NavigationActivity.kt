@@ -19,12 +19,15 @@
 package org.potados.navigation.base
 
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.tabs.TabItem
 import kotlinx.android.synthetic.main.navigation_activity.*
 import org.potados.navigation.R
 import java.util.*
@@ -46,38 +49,42 @@ abstract class NavigationActivity : AppCompatActivity(),
      */
     private val backStack = Stack<Int>()
 
-    /**
-     * List of fragments that will be held in the bottom navigation.
-     */
-    abstract val fragments: List<NavigationFragment>
-
-    /**
-     * Bottom navigation menu resource id
-     */
+    abstract val fragmentArguments: List<NavigationFragment.Arguments>
     abstract val menuRes: Int
 
-    /********************************
-     * AppCompatActivity
-     ********************************/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.navigation_activity)
 
-        initViewPager()
+        initViewPager(savedInstanceState)
         initBottomNavigation()
     }
 
-    private fun initViewPager() {
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("BACK_STACK", backStack)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        @Suppress("UNCHECKED_CAST")
+        val restored = (savedInstanceState.getSerializable("BACK_STACK") as? Stack<Int>) ?: return
+
+        backStack.addAll(restored)
+    }
+
+    private fun initViewPager(savedInstanceState: Bundle?) {
         with(main_pager) {
             addOnPageChangeListener(this@NavigationActivity)
             adapter = ViewPagerAdapter()
-            post(::checkDeepLink)
-            offscreenPageLimit = fragments.size
+            savedInstanceState ?: post(::checkDeepLink)
+            offscreenPageLimit = fragmentArguments.size
         }
     }
 
     private fun checkDeepLink() {
-        fragments.forEachIndexed { index, fragment ->
+        getAllFragments().forEachIndexed { index, fragment ->
             val hasDeepLink = fragment.handleDeepLink(intent)
             if (hasDeepLink) {
                 setItem(index)
@@ -96,11 +103,12 @@ abstract class NavigationActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        val fragment = fragments[main_pager.currentItem]
-        val hasNavigatedUpNestedFragment = fragment.onBackPressed()
+        findFragmentByPosition(main_pager.currentItem)?.let {
+            val hasNavigatedUpNestedFragment = it.onBackPressed()
 
-        if (!hasNavigatedUpNestedFragment) {
-            handleRootLevelBackPress()
+            if (!hasNavigatedUpNestedFragment) {
+                handleRootLevelBackPress()
+            }
         }
     }
 
@@ -111,6 +119,29 @@ abstract class NavigationActivity : AppCompatActivity(),
             super.onBackPressed()
         }
     }
+
+    private fun getAllFragments() =
+        supportFragmentManager.fragments
+            .filter { fragment ->
+                fragment is NavigationFragment &&
+                        fragment.getTabItemId() in fragmentArguments.map { it.tabItemId }
+            }.map {
+                it as NavigationFragment
+            }
+
+    private fun findFragmentByPosition(position: Int) =
+        supportFragmentManager.findFragmentByTag(
+            "android:switcher:${main_pager.id}:${position}"
+        ) as? NavigationFragment
+
+    private fun findFragmentByTabItem(item: MenuItem) =
+        findFragmentByPosition(getPositionByTabItem(item))
+
+    private fun getPositionByTabItem(item: MenuItem) =
+        fragmentArguments.indexOf(fragmentArguments.find { it.tabItemId == item.itemId })
+
+    private fun getTabItemIdByPosition(position: Int) =
+        fragmentArguments[position].tabItemId
 
     /********************************
      * ViewPager
@@ -125,16 +156,16 @@ abstract class NavigationActivity : AppCompatActivity(),
      * BottomNavigationView
      ********************************/
     override fun onNavigationItemReselected(item: MenuItem) =
-        getHostFragmentByTabItem(item).popToRoot()
+        getHostFragmentByTabItem(item)?.popToRoot() ?: Unit
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean =
         setItem(item)
 
-    private fun getHostFragmentByTabItem(item: MenuItem): NavigationFragment =
-        fragments.find { it.getTabItemId() == item.itemId }!!
+    private fun getHostFragmentByTabItem(item: MenuItem) =
+        findFragmentByTabItem(item)
 
     private fun getFragmentPositionByTabItem(item: MenuItem) =
-        fragments.indexOf(getHostFragmentByTabItem(item))
+        getPositionByTabItem(item)
 
     private fun setItem(item: MenuItem): Boolean =
         setItem(getFragmentPositionByTabItem(item))
@@ -153,7 +184,7 @@ abstract class NavigationActivity : AppCompatActivity(),
     }
 
     private fun markTabSelected(position: Int) {
-        val tabItemId = fragments[position].getTabItemId()
+        val tabItemId = getTabItemIdByPosition(position)
 
         with(bottom_nav) {
             if (selectedItemId != tabItemId) {
@@ -163,7 +194,7 @@ abstract class NavigationActivity : AppCompatActivity(),
     }
 
     inner class ViewPagerAdapter : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        override fun getItem(position: Int): Fragment = fragments[position]
-        override fun getCount(): Int = fragments.size
+        override fun getItem(position: Int): Fragment = NavigationFragment.newInstance(fragmentArguments[position])
+        override fun getCount(): Int = fragmentArguments.size
     }
 }

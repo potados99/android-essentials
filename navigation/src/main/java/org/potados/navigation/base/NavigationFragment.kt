@@ -94,6 +94,14 @@ class NavigationFragment : Fragment() {
         return tabItemId
     }
 
+    data class Arguments(
+        val layoutRes: Int,
+        val toolbarId: Int,
+        val navHostId: Int,
+        val tabItemId: Int,
+        val rootDests: IntArray
+    )
+
     companion object {
         private const val KEY_LAYOUT = "layout_key"
         private const val KEY_TOOLBAR = "toolbar_key"
@@ -101,18 +109,27 @@ class NavigationFragment : Fragment() {
         private const val KEY_TAB_ITEM = "tab_item_key"
         private const val KEY_ROOT_DEST = "root_dest_key"
 
-        fun newInstance(layoutRes: Int,
-                        toolbarId: Int,
-                        navHostId: Int,
-                        tabItemId: Int,
-                        rootDests: IntArray) =
+        fun createArguments(layoutRes: Int,
+                            toolbarId: Int,
+                            navHostId: Int,
+                            tabItemId: Int,
+                            rootDests: IntArray) =
+            Arguments(
+                layoutRes,
+                toolbarId,
+                navHostId,
+                tabItemId,
+                rootDests
+            )
+
+        fun newInstance(args: Arguments) =
             NavigationFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(KEY_LAYOUT, layoutRes)
-                    putInt(KEY_TOOLBAR, toolbarId)
-                    putInt(KEY_NAV_HOST, navHostId)
-                    putInt(KEY_TAB_ITEM, tabItemId)
-                    putIntArray(KEY_ROOT_DEST, rootDests)
+                    putInt(KEY_LAYOUT, args.layoutRes)
+                    putInt(KEY_TOOLBAR, args.toolbarId)
+                    putInt(KEY_NAV_HOST, args.navHostId)
+                    putInt(KEY_TAB_ITEM, args.tabItemId)
+                    putIntArray(KEY_ROOT_DEST, args.rootDests)
                 }
             }
     }
