@@ -19,15 +19,12 @@
 package org.potados.navigation.base
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.tabs.TabItem
 import kotlinx.android.synthetic.main.navigation_activity.*
 import org.potados.navigation.R
 import java.util.*
