@@ -23,6 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Content -->
     <org.potados.navigation.widget.NonSwipingViewPager
         android:id="@+id/main_pager"
         android:layout_width="0dp"
@@ -32,6 +33,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Shadow -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/shadow" />
+
+    <!-- Bottom nav -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
@@ -39,6 +50,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-    <!-- Have to set menu programmatically -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
