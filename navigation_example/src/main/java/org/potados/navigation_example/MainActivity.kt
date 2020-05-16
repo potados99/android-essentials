@@ -23,6 +23,11 @@ import org.potados.navigation.base.NavigationFragment
 
 class MainActivity : NavigationActivity() {
 
+    override val menuRes: Int = R.menu.menu_main
+    override val layoutRes: Int = R.layout.navigation_activity
+    override val mainPagerRes: Int = R.id.main_pager
+    override val bottomNavRes: Int = R.id.bottom_nav
+
     override val fragmentArguments = listOf(
         NavigationFragment.createArguments(
             layoutRes = R.layout.content_home_base,
@@ -44,6 +49,4 @@ class MainActivity : NavigationActivity() {
             navHostId = R.id.nav_host_settings,
             tabItemId = R.id.settings,
             rootDests = rootDestinations))
-
-    override val menuRes: Int = R.menu.menu_main
 }

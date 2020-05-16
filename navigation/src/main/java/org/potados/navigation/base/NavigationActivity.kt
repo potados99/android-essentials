@@ -25,8 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.navigation_activity.*
-import org.potados.navigation.R
+import org.potados.navigation.widget.NonSwipingViewPager
 import java.util.*
 
 /**
@@ -48,10 +47,16 @@ abstract class NavigationActivity : AppCompatActivity(),
 
     abstract val fragmentArguments: List<NavigationFragment.Arguments>
     abstract val menuRes: Int
+    abstract val layoutRes: Int
+    abstract val mainPagerRes: Int
+    abstract val bottomNavRes: Int
+
+    private lateinit var mainPager: NonSwipingViewPager
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.navigation_activity)
+        setContentView(layoutRes)
 
         initViewPager(savedInstanceState)
         initBottomNavigation()
@@ -72,7 +77,9 @@ abstract class NavigationActivity : AppCompatActivity(),
     }
 
     private fun initViewPager(savedInstanceState: Bundle?) {
-        with(main_pager) {
+        mainPager = findViewById(mainPagerRes)
+
+        with(mainPager) {
             addOnPageChangeListener(this@NavigationActivity)
             adapter = ViewPagerAdapter()
             savedInstanceState ?: post(::checkDeepLink)
@@ -90,7 +97,9 @@ abstract class NavigationActivity : AppCompatActivity(),
     }
 
     private fun initBottomNavigation() {
-        with(bottom_nav) {
+        bottomNavigation = findViewById(bottomNavRes)
+
+        with(bottomNavigation) {
             menu.clear()
             inflateMenu(menuRes)
 
@@ -100,7 +109,7 @@ abstract class NavigationActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        findFragmentByPosition(main_pager.currentItem)?.let {
+        findFragmentByPosition(mainPager.currentItem)?.let {
             val hasNavigatedUpNestedFragment = it.onBackPressed()
 
             if (!hasNavigatedUpNestedFragment) {
@@ -111,7 +120,7 @@ abstract class NavigationActivity : AppCompatActivity(),
 
     private fun handleRootLevelBackPress() {
         if (backStack.size > 0) {
-            main_pager.currentItem = backStack.pop()
+            mainPager.currentItem = backStack.pop()
         } else {
             super.onBackPressed()
         }
@@ -128,7 +137,7 @@ abstract class NavigationActivity : AppCompatActivity(),
 
     private fun findFragmentByPosition(position: Int) =
         supportFragmentManager.findFragmentByTag(
-            "android:switcher:${main_pager.id}:${position}"
+            "android:switcher:${mainPager.id}:${position}"
         ) as? NavigationFragment
 
     private fun findFragmentByTabItem(item: MenuItem) =
@@ -168,7 +177,7 @@ abstract class NavigationActivity : AppCompatActivity(),
         setItem(getFragmentPositionByTabItem(item))
 
     private fun setItem(position: Int): Boolean {
-        with(main_pager) {
+        with(mainPager) {
             if (currentItem != position) {
                 // Prevent duplication in back stack.
                 backStack.removeIf { it == currentItem }
@@ -183,7 +192,7 @@ abstract class NavigationActivity : AppCompatActivity(),
     private fun markTabSelected(position: Int) {
         val tabItemId = getTabItemIdByPosition(position)
 
-        with(bottom_nav) {
+        with(bottomNavigation) {
             if (selectedItemId != tabItemId) {
                 selectedItemId = tabItemId
             }
